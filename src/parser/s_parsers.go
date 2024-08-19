@@ -27,11 +27,16 @@ func (p *Parser) parseLetStatement() ast.Statement {
 func (p *Parser) parseReturnStatement() ast.Statement {
 	stmt := ast.ReturnStatement{PrefixToken: p.curToken}
 
-	// TODO: Shiuld expect an expression or identifier
-
-	if !p.expectPeek(token.RTN_PREFIX) {
-    return nil
+	// TODO: Should expect an expression or identifier. Advance token for now
+	for p.curToken.Type != token.RTN_SURFIX {
+		p.nextToken()
 	}
+
+	// if !p.expectPeek(token.RTN_PREFIX) {
+	//    return nil
+	// }
+
+  stmt.SurfixToken = p.curToken
 
 	return &stmt
 }

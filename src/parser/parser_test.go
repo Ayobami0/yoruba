@@ -35,11 +35,42 @@ jeki school je "FUTA"
 		{"age"},
 		{"school"},
 	}
-
 	for i, tt := range tests {
 		stmt := program.Statements[i]
 		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
 			return
+		}
+	}
+}
+
+func TestReturnStatement(t *testing.T) {
+	b := bytes.NewBufferString(`
+da name pada
+da "Ayobami" pada
+da 69 pada
+da 69+420 pada
+`)
+
+	l := lexer.New(b)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	if program == nil {
+		t.Fatalf("ParseProgram() returned nil")
+	}
+	if len(program.Statements) != 4 {
+		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
+	}
+
+	for _, stmt := range program.Statements {
+		returnStmt, ok := stmt.(*ast.ReturnStatement)
+		if !ok {
+			t.Errorf("stmt not *ast.returnStatement. got=%T", stmt)
+			continue
+		}
+		if returnStmt.TokenLiteral() != "da pada" {
+			t.Errorf("returnStmt.TokenLiteral not 'return', got %q",
+				returnStmt.TokenLiteral())
 		}
 	}
 }
