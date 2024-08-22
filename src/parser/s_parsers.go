@@ -20,6 +20,7 @@ func (p *Parser) parseLetStatement() ast.Statement {
 	}
 
 	// TODO: Work on expression
+  p.nextToken()
 	return &stmt
 }
 
@@ -36,7 +37,14 @@ func (p *Parser) parseReturnStatement() ast.Statement {
 	//    return nil
 	// }
 
-  stmt.SurfixToken = p.curToken
+	stmt.SurfixToken = p.curToken
 
 	return &stmt
+}
+
+func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
+	stmt := &ast.ExpressionStatement{Token: p.curToken}
+	stmt.Expression = p.parseExpression(LOWEST)
+
+	return stmt
 }

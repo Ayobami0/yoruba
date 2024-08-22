@@ -10,7 +10,7 @@ func (l *Lexer) buildStr() string {
 	var str strings.Builder
 	l.reader.Scan()
 	for {
-    c := l.reader.Bytes()[0]
+		c := l.reader.Bytes()[0]
 		if c == '\n' || c == '"' {
 			break
 		}
@@ -24,7 +24,11 @@ func (l *Lexer) buildIdent() string {
 	var ident strings.Builder
 
 	for {
-    c := l.reader.Bytes()[0]
+		b := l.reader.Bytes()
+		if len(b) == 0 {
+			break
+		}
+		c := b[0]
 		if !token.IsAlpha(c) {
 			break
 		}
@@ -38,7 +42,11 @@ func (l *Lexer) buildInt() string {
 	var num strings.Builder
 
 	for {
-    ch := l.reader.Bytes()[0]
+		b := l.reader.Bytes()
+		if len(b) == 0 {
+			break
+		}
+		ch := b[0]
 		if !token.IsDigit(ch) {
 			break
 		}
@@ -48,4 +56,3 @@ func (l *Lexer) buildInt() string {
 
 	return num.String()
 }
-

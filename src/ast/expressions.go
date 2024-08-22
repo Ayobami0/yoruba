@@ -1,16 +1,24 @@
 package ast
 
+import (
+	"github.com/Ayobami0/yoruba/src/token"
+)
 
-import "github.com/Ayobami0/yoruba/src/token"
-
-type StringLiteral struct {
-  Token token.Token
-  Value string
+type InfixExpression struct {
+	Token    token.Token
+	Left     Expression
+	Right    Expression
+	Operator string
 }
 
-func (s *StringLiteral) expressionNode() {
+func (i *InfixExpression) expressionNode()      {}
+func (i *InfixExpression) TokenLiteral() string { return i.Token.Literal }
+
+type PrefixExpression struct {
+	Token    token.Token
+	Operator string
+	Right    Expression
 }
 
-func (s *StringLiteral) TokenLiteral() string {
-  return s.Token.Literal
-}
+func (p *PrefixExpression) expressionNode()      {}
+func (p *PrefixExpression) TokenLiteral() string { return p.Token.Literal }

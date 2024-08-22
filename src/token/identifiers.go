@@ -9,6 +9,9 @@ const (
 	NUM = "NUM"
 	STR = "STR"
 
+  R_BRACE = "("
+  L_BRACE = "("
+
 	PLUS   = "PLUS"
 	MINUS  = "MINUS"
 	DIVIDE = "DIVIDE"
@@ -36,6 +39,8 @@ const (
 	RTN_SURFIX = "RETURN_SURFIX"
 	BREAK      = "BREAK"
 	TILL       = "TILL"
+	G_THAN     = "GREATER_THAN"
+	L_THAN     = "LESS_THAN"
 )
 
 var keywords = map[string]TokenType{
@@ -50,7 +55,7 @@ var keywords = map[string]TokenType{
 	"ati":     AND,
 	"tabi":    OR,
 	"ti":      IF,
-	"abiti":  ELSEIF,
+	"abiti":   ELSEIF,
 	"abi":     ELSE,
 	"se":      EXECUTE,
 	"lehinna": THEN,
@@ -58,6 +63,8 @@ var keywords = map[string]TokenType{
 	"pada":    RTN_SURFIX,
 	"titi":    TILL,
 	"fo":      BREAK,
+	"tobiju":  G_THAN,
+	"kereju":  L_THAN,
 }
 
 func LookUp(ident string) TokenType {

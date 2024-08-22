@@ -1,10 +1,9 @@
-package lexer_test
+package lexer
 
 import (
 	"bytes"
 	"testing"
 
-	"github.com/Ayobami0/yoruba/src/lexer"
 	"github.com/Ayobami0/yoruba/src/token"
 )
 
@@ -25,7 +24,7 @@ abi lehinna
 pari
 `)
 
-	l := lexer.New(b)
+	l := New(b)
 
 	tests := []struct {
 		eType    token.TokenType

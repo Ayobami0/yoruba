@@ -9,13 +9,34 @@ import (
 type Parser struct {
 	l *lexer.Lexer
 
-  errors []string
+	errors []string
+
 	curToken  token.Token
 	peekToken token.Token
+
+	prefixParseFns map[token.TokenType]prefixParseFn
+	infixParseFns  map[token.TokenType]infixParseFn
 }
 
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{l: l, errors: []string{}}
+
+	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
+
+	p.registerPrefix(token.IDENT, p.parseIdentifier)
+	p.registerPrefix(token.NUM, p.parseNumberLiteral)
+	p.registerPrefix(token.STR, p.parseStringLiteral)
+	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
+
+	p.infixParseFns = make(map[token.TokenType]infixParseFn)
+	p.registerInfix(token.PLUS, p.parseInfixExpression)
+	p.registerInfix(token.MINUS, p.parseInfixExpression)
+	p.registerInfix(token.DIVIDE, p.parseInfixExpression)
+	p.registerInfix(token.TIMES, p.parseInfixExpression)
+	p.registerInfix(token.EQL, p.parseInfixExpression)
+	p.registerInfix(token.NOTEQL, p.parseInfixExpression)
+	p.registerInfix(token.L_THAN, p.parseInfixExpression)
+	p.registerInfix(token.G_THAN, p.parseInfixExpression)
 
 	p.nextToken()
 	p.nextToken()
@@ -38,5 +59,5 @@ func (p *Parser) ParseProgram() *ast.Program {
 }
 
 func (p *Parser) Errors() []string {
-  return p.errors
+	return p.errors
 }

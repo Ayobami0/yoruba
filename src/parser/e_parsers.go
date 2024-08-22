@@ -1,12 +1,61 @@
 package parser
 
 import (
+	"fmt"
+
 	"github.com/Ayobami0/yoruba/src/ast"
+	"github.com/Ayobami0/yoruba/src/token"
 )
 
-// Parser for string expression
-func (p *Parser) parseStringLiteral() ast.Expression {
-  exp := &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+func (p *Parser) noPrefixParseFnError(t token.TokenType) {
+	msg := fmt.Sprintf("no prefix parse function for %s found", t)
+	p.errors = append(p.errors, msg)
+}
 
-  return exp
+func (p *Parser) parseExpression(precedence int) ast.Expression {
+	prefix := p.prefixParseFns[p.curToken.Type]
+	if prefix == nil {
+		p.noPrefixParseFnError(p.curToken.Type)
+		return nil
+	}
+  leftExp := prefix()
+
+	for precedence < p.peekPrecedence() {
+		infix := p.infixParseFns[p.peekToken.Type]
+		if infix == nil {
+			return leftExp
+		}
+		p.nextToken()
+		leftExp = infix(leftExp) // Recussive step
+	}
+
+	return leftExp
+}
+
+// NuDs - Null Denomination Function
+func (p *Parser) parsePrefixExpression() ast.Expression {
+	expression := &ast.PrefixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+	}
+	p.nextToken()
+	expression.Right = p.parseExpression(PREFIX)
+	return expression
+}
+
+// LeDs - Left Denomination Function
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	expression := &ast.InfixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+		Left:     left,
+	}
+	precedence := p.curPrecedence()
+	p.nextToken()
+	expression.Right = p.parseExpression(precedence)
+	return expression
+}
+
+func (p *Parser) parseIdentifier() ast.Expression {
+	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 }

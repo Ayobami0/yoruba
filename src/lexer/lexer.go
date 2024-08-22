@@ -46,6 +46,10 @@ func (l *Lexer) NextToken() token.Token {
 	switch ch {
 	case ',':
 		t = token.New(token.COMMA, ch)
+	case '(':
+		t = token.New(token.R_BRACE, ch)
+	case ')':
+		t = token.New(token.L_BRACE, ch)
 	case '+':
 		t = token.New(token.PLUS, ch)
 	case '-':
@@ -71,6 +75,7 @@ func (l *Lexer) NextToken() token.Token {
 			t.Type = token.NUM
 		} else {
 			t = token.New(token.ILLEGAL, ch)
+			l.reader.Scan()
 		}
 		return t
 	}
