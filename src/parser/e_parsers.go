@@ -1,3 +1,4 @@
+// Expression Parsers
 package parser
 
 import (
@@ -18,7 +19,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 		p.noPrefixParseFnError(p.curToken.Type)
 		return nil
 	}
-  leftExp := prefix()
+	leftExp := prefix()
 
 	for precedence < p.peekPrecedence() {
 		infix := p.infixParseFns[p.peekToken.Type]
@@ -48,11 +49,11 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	expression := &ast.InfixExpression{
 		Token:    p.curToken,
 		Operator: p.curToken.Literal,
-		Left:     left,
+		Left:     left, // Assigns the left expression to the left field of the infix expression
 	}
 	precedence := p.curPrecedence()
 	p.nextToken()
-	expression.Right = p.parseExpression(precedence)
+	expression.Right = p.parseExpression(precedence) // Parses the RHS expression
 	return expression
 }
 
