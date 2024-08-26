@@ -7,6 +7,7 @@ import (
 
 	"github.com/Ayobami0/yoruba/src/ast"
 	"github.com/Ayobami0/yoruba/src/lexer"
+	"github.com/Ayobami0/yoruba/src/token"
 )
 
 func checkParserErrors(t *testing.T, p *Parser) {
@@ -80,6 +81,32 @@ func testStringLiteral(t *testing.T, sl ast.Expression, value string) bool {
 	return true
 }
 
+func testBooleanLiteral(t *testing.T, sl ast.Expression, value bool) bool {
+	bl, ok := sl.(*ast.BooleanLiteral)
+	if !ok {
+		t.Errorf("sl not *ast.BooleanLiteral. got=%T", bl)
+		return false
+	}
+
+	if bl.Value != value {
+		t.Errorf("bl.Value not %v. got=%v", value, bl.Value)
+		return false
+	}
+	var val string
+
+	if value {
+		val = "ooto"
+	} else {
+		val = "eke"
+	}
+
+	if bl.Token.Literal != val {
+		t.Errorf("bool.TokenLiteral not %s. got=%s", fmt.Sprintf("%v", value), bl.TokenLiteral())
+		return false
+	}
+	return true
+}
+
 func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
 	ident, ok := exp.(*ast.Identifier)
 	if !ok {
@@ -101,37 +128,28 @@ func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
 func testLiteralExpression(
 	t *testing.T,
 	exp ast.Expression,
-	expected ast.Expression,
+	expected interface{},
 ) bool {
 	switch v := expected.(type) {
-	case *ast.NumberLiteral:
-		return testNumberLiteral(t, exp, int64(v.Value))
-	case *ast.Identifier:
-		return testIdentifier(t, exp, v.Value)
+	case int:
+		nExp := exp.(*ast.NumberLiteral)
+		return testNumberLiteral(t, nExp, int64(v))
+	case string:
+		switch exp.(type) {
+		case *ast.StringLiteral:
+			sExp := exp.(*ast.StringLiteral)
+			return testStringLiteral(t, sExp, v)
+		case *ast.Identifier:
+			iExp := exp.(*ast.Identifier)
+			return testIdentifier(t, iExp, v)
+		}
+	case bool:
+		bExp := exp.(*ast.BooleanLiteral)
+		return testBooleanLiteral(t, bExp, v)
 	}
 
 	t.Errorf("type of exp not handled. got=%T", exp)
 	return false
-}
-
-func testInfixExpression(t *testing.T, exp ast.Expression, left ast.Expression,
-	operator string, right ast.Expression) bool {
-	opExp, ok := exp.(*ast.InfixExpression)
-	if !ok {
-		t.Errorf("exp is not ast.OperatorExpression. got=%T(%s)", exp, exp)
-		return false
-	}
-	if !testLiteralExpression(t, opExp.Left, left) {
-		return false
-	}
-	if opExp.Operator != operator {
-		t.Errorf("exp.Operator is not '%s'. got=%q", operator, opExp.Operator)
-		return false
-	}
-	if !testLiteralExpression(t, opExp.Right, right) {
-		return false
-	}
-	return true
 }
 
 func TestLetStatements(t *testing.T) {
@@ -171,7 +189,7 @@ func TestReturnStatement(t *testing.T) {
 	b := bytes.NewBufferString(`da name pada
 da "Ayobami" pada
 da 69 pada
-da 69 + 240 pada
+da (69 + 240) pada
 `)
 
 	l := lexer.New(b)
@@ -263,6 +281,118 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	}
 }
 
+func TestIfStatement(t *testing.T) {
+	b := bytes.NewBufferString(`
+    ti x baje y lehinna
+      "abi"
+      da x pada
+    abi
+      ti x baje z lehinna
+        "test"
+      pari
+      5
+    pari
+    `)
+
+	l := lexer.New(b)
+	p := New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d",
+			len(program.Statements))
+	}
+
+	ifStmt, ok := program.Statements[0].(*ast.IfStatement)
+
+	if !ok {
+		t.Fatalf("program.Statement[0] is not *ast.IfStatement")
+	}
+
+	consqBlk := ifStmt.Consequence
+
+	if len(consqBlk.Statements) != 2 {
+		t.Fatalf("Consequence block statements does not equal 2. got=%d",
+			len(program.Statements))
+	}
+
+	consqTests := []struct{ eLiteral string }{{"abi"}, {"da pada"}}
+
+	for i, v := range consqTests {
+		if consqBlk.Statements[i].TokenLiteral() != v.eLiteral {
+			t.Fatalf("consqBlk.Statements[%d].TokenLiteral() is not %s, got %s", i, v.eLiteral, consqBlk.TokenLiteral())
+		}
+	}
+
+
+	altBlk := ifStmt.Alternative
+	if len(altBlk.Statements) != 2 {
+		t.Fatalf("Alternative block statements does not equal 2. got=%d",
+			len(program.Statements))
+	}
+	altTests := []struct{ eLiteral string }{{"ti"}, {"5"}}
+
+	for i, v := range altTests {
+		if altBlk.Statements[i].TokenLiteral() != v.eLiteral {
+			t.Fatalf("altBlk.Statements[%d].TokenLiteral() is not %s, got %s", i, v.eLiteral, altBlk.Statements[i].TokenLiteral())
+		}
+	}
+
+}
+
+func TestBooleanLiteralExpression(t *testing.T) {
+	b := bytes.NewBufferString(`
+    ooto
+    eke
+    `)
+
+	l := lexer.New(b)
+	p := New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+	if len(program.Statements) != 2 {
+		t.Fatalf("program has not enough statements. got=%d",
+			len(program.Statements))
+	}
+
+	tests := []struct {
+		eType    token.TokenType
+		eValue   bool
+		eLiteral string
+	}{
+		{token.TRUE, true, "ooto"},
+		{token.FALSE, false, "eke"},
+	}
+
+	for i, v := range tests {
+		stmt, ok := program.Statements[i].(*ast.ExpressionStatement)
+
+		if !ok {
+			t.Fatalf("program.Statements[%d] is not ast.ExpressionStatement. got=%T",
+				i, program.Statements[i])
+		}
+
+		exp, ok := stmt.Expression.(*ast.BooleanLiteral)
+
+		if !ok {
+			t.Fatalf("exp not *ast.BooleanLiteral. got=%T", stmt.Expression)
+		}
+
+		if exp.Token.Type != v.eType {
+			t.Fatalf("exp.Token.Type not %s. got %s", v.eType, exp.Token.Type)
+		}
+		if exp.TokenLiteral() != v.eLiteral {
+			t.Fatalf("exp.TokenLiteral() not %s. got %s", v.eLiteral, exp.TokenLiteral())
+		}
+		if exp.Value != v.eValue {
+			t.Fatalf("exp.Value not %v. got %v", v.eValue, exp.Value)
+		}
+	}
+
+}
+
 func TestStringLiteralExpression(t *testing.T) {
 	b := bytes.NewBufferString("\"Ayobami\"")
 
@@ -339,9 +469,9 @@ func TestParsingPrefixExpressions(t *testing.T) {
 func TestParsingInfixExpressions(t *testing.T) {
 	infixTests := []struct {
 		input      string
-		leftValue  int64
+		leftValue  interface{}
 		operator   string
-		rightValue int64
+		rightValue interface{}
 	}{
 		{"5 + 5", 5, "+", 5},
 		{"5 - 5", 5, "-", 5},
@@ -351,6 +481,7 @@ func TestParsingInfixExpressions(t *testing.T) {
 		{"5 kereju 5", 5, "kereju", 5},
 		{"5 baje 5", 5, "baje", 5},
 		{"5 kobaje 5", 5, "kobaje", 5},
+		{"ooto kobaje eke", true, "kobaje", false},
 	}
 	for _, tt := range infixTests {
 		b := bytes.NewBufferString(tt.input)
@@ -373,15 +504,15 @@ func TestParsingInfixExpressions(t *testing.T) {
 		if !ok {
 			t.Fatalf("exp is not ast.InfixExpression. got=%T", stmt.Expression)
 		}
-		if !testNumberLiteral(t, exp.Left, tt.leftValue) {
+		if !testLiteralExpression(t, exp.Left, tt.leftValue) {
+			return
+		}
+		if !testLiteralExpression(t, exp.Right, tt.rightValue) {
 			return
 		}
 		if exp.Operator != tt.operator {
 			t.Fatalf("exp.Operator is not '%s'. got=%s",
 				tt.operator, exp.Operator)
-		}
-		if !testNumberLiteral(t, exp.Right, tt.rightValue) {
-			return
 		}
 	}
 }

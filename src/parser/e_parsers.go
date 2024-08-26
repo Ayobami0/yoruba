@@ -57,6 +57,19 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	return expression
 }
 
+// Parser for grouped expressions i.e (1 + 2) * 3
+func (p *Parser) parseGroupedExpression() ast.Expression {
+  p.nextToken() // Move to next token (now in parentises)
+
+  expr := p.parseExpression(LOWEST) // Parse expression inside parenteses
+
+  if !p.expectPeek(token.R_PAREN) {
+    return nil
+  }
+
+  return expr
+}
+
 func (p *Parser) parseIdentifier() ast.Expression {
 	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 }

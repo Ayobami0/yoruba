@@ -21,7 +21,7 @@ func (p *Parser) parseLetStatement() ast.Statement {
 	}
 
 	// TODO: Work on expression
-  p.nextToken()
+	p.nextToken()
 	return &stmt
 }
 
@@ -48,4 +48,43 @@ func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
 	stmt.Expression = p.parseExpression(LOWEST)
 
 	return stmt
+}
+
+func (p *Parser) parseIfStatement() *ast.IfStatement {
+	stmt := &ast.IfStatement{Token: p.curToken}
+	p.nextToken()
+
+	stmt.Condition = p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.THEN) {
+		return nil
+	}
+
+	stmt.Consequence = p.parseBlockStatement()
+
+	switch p.curToken.Type {
+	case token.ELSE:
+		stmt.Alternative = p.parseBlockStatement()
+	}
+
+	if !p.curTokenIs(token.END) {
+		return nil
+	}
+
+	return stmt
+}
+
+func (p *Parser) parseBlockStatement() *ast.BlockStatement {
+	blk := &ast.BlockStatement{Token: p.curToken}
+	p.nextToken()
+
+	for !p.curTokenIs(token.END) && !p.curTokenIs(token.EOF) && !p.curTokenIs(token.ELSE) {
+		stmt := p.parseStatement()
+
+		if stmt != nil {
+			blk.Statements = append(blk.Statements, stmt)
+		}
+		p.nextToken()
+	}
+	return blk
 }

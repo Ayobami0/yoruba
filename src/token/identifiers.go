@@ -9,13 +9,13 @@ const (
 	NUM = "NUM"
 	STR = "STR"
 
-  R_BRACE = "("
-  L_BRACE = "("
+  R_PAREN = ")"
+  L_PAREN = "("
 
-	PLUS   = "PLUS"
-	MINUS  = "MINUS"
-	DIVIDE = "DIVIDE"
-	TIMES  = "MULTIPLY"
+	PLUS   = "+"
+	MINUS  = "-"
+	DIVIDE = "/"
+	TIMES  = "*"
 
 	QUOTE = "QUOTE"
 	COMMA = "COMMA"
@@ -32,7 +32,6 @@ const (
 	OR         = "OR"
 	IF         = "IF"
 	ELSE       = "ELSE"
-	ELSEIF     = "ELSEIF"
 	THEN       = "THEN"
 	EXECUTE    = "EXECUTE"
 	RTN_PREFIX = "RETURN_PREFIX"
@@ -55,7 +54,6 @@ var keywords = map[string]TokenType{
 	"ati":     AND,
 	"tabi":    OR,
 	"ti":      IF,
-	"abiti":   ELSEIF,
 	"abi":     ELSE,
 	"se":      EXECUTE,
 	"lehinna": THEN,

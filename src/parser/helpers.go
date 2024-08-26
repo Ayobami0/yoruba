@@ -44,7 +44,7 @@ func (p *Parser) peekPrecedence() int {
 	return LOWEST
 }
 
-// Returns the precedence of the current token 
+// Returns the precedence of the current token
 // If precedence doesn't exist, return LOWEST
 func (p *Parser) curPrecedence() int {
 	if p, ok := precedences[p.curToken.Type]; ok {
@@ -60,6 +60,8 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseLetStatement()
 	case token.RTN_PREFIX:
 		return p.parseReturnStatement()
+	case token.IF:
+		return p.parseIfStatement()
 	default:
 		return p.parseExpressionStatement()
 	}
