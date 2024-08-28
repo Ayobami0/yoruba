@@ -74,12 +74,57 @@ func (p *Parser) parseIfStatement() *ast.IfStatement {
 	return stmt
 }
 
+func (p *Parser) parseFunctionStatement() *ast.FunctionStatement {
+	fn := &ast.FunctionStatement{Token: p.curToken}
+
+	if !p.expectPeek(token.IDENT) {
+		return nil
+	}
+
+	fn.Parameters = p.parseFunctionParameters()
+	fn.Body = p.parseBlockStatement()
+
+	if !p.curTokenIs(token.END) {
+		return nil
+	}
+
+	return fn
+}
+
+func (p *Parser) parseFunctionParameters() []*ast.Identifier {
+
+	var params []*ast.Identifier
+
+	if p.peekTokenIs(token.EXECUTE) {
+		p.nextToken()
+		return params
+	}
+
+	p.nextToken()
+	ident := ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	params = append(params, &ident)
+
+	for p.peekTokenIs(token.COMMA) {
+		p.nextToken()
+		p.nextToken()
+		ident := ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+
+		params = append(params, &ident)
+	}
+
+	if !p.expectPeek(token.EXECUTE) {
+		return nil
+	}
+
+	return params
+}
+
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	blk := &ast.BlockStatement{Token: p.curToken}
 	p.nextToken()
 
 	for !p.curTokenIs(token.END) && !p.curTokenIs(token.EOF) && !p.curTokenIs(token.ELSE) {
-		stmt := p.parseStatement()
+		stmt := p.parseStatement() // Statements can also include if statements
 
 		if stmt != nil {
 			blk.Statements = append(blk.Statements, stmt)

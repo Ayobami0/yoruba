@@ -40,11 +40,21 @@ type IfStatement struct {
 	Token       token.Token
 	Condition   Expression
 	Consequence *BlockStatement
-  Alternative *BlockStatement // Accepts either another if else statement or an else statement
+	Alternative *BlockStatement
 }
 
 func (i *IfStatement) statementNode()       {}
 func (i *IfStatement) TokenLiteral() string { return i.Token.Literal }
+
+type FunctionStatement struct {
+	Token      token.Token
+	Ident      Identifier
+	Parameters []*Identifier
+	Body       *BlockStatement
+}
+
+func (fn *FunctionStatement) statementNode()       {}
+func (fn *FunctionStatement) TokenLiteral() string { return fn.Token.Literal }
 
 type BlockStatement struct {
 	Token      token.Token

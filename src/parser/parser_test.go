@@ -325,7 +325,6 @@ func TestIfStatement(t *testing.T) {
 		}
 	}
 
-
 	altBlk := ifStmt.Alternative
 	if len(altBlk.Statements) != 2 {
 		t.Fatalf("Alternative block statements does not equal 2. got=%d",
@@ -515,4 +514,45 @@ func TestParsingInfixExpressions(t *testing.T) {
 				tt.operator, exp.Operator)
 		}
 	}
+}
+
+func TestFunctionStatement(t *testing.T) {
+	b := bytes.NewBufferString(`
+    ise print fname, lname se
+      "nothing"
+    pari
+    `)
+
+	l := lexer.New(b)
+	p := New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d",
+			len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.FunctionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.FunctionStatement. got=%T",
+			program.Statements[0])
+	}
+	if len(stmt.Parameters) != 2 {
+		t.Fatalf("function literal parameters wrong. want 2, got=%d\n",
+			len(stmt.Parameters))
+	}
+	testLiteralExpression(t, stmt.Parameters[0], "fname")
+	testLiteralExpression(t, stmt.Parameters[1], "lname")
+	if len(stmt.Body.Statements) != 1 {
+		t.Fatalf("function.Body.Statements has not 1 statements. got=%d\n",
+			len(stmt.Body.Statements))
+	}
+	bodyStmt, ok := stmt.Body.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("function body stmt is not ast.ExpressionStatement. got=%T",
+			stmt.Body.Statements[0])
+	}
+
+  testStringLiteral(t, bodyStmt.Expression, "nothing")
 }
