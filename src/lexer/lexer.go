@@ -46,10 +46,10 @@ func (l *Lexer) NextToken() token.Token {
 	switch ch {
 	case ',':
 		t = token.New(token.COMMA, ch)
-	case ')':
-		t = token.New(token.R_PAREN, ch)
-	case '(':
-		t = token.New(token.L_PAREN, ch)
+	case '}':
+		t = token.New(token.R_GROUP, ch)
+	case '{':
+		t = token.New(token.L_GROUP, ch)
 	case '+':
 		t = token.New(token.PLUS, ch)
 	case '-':

@@ -29,7 +29,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 	p.registerPrefix(token.TRUE, p.parseBooleanLiteral)
 	p.registerPrefix(token.FALSE, p.parseBooleanLiteral)
-	p.registerPrefix(token.L_PAREN, p.parseGroupedExpression)
+	p.registerPrefix(token.L_GROUP, p.parseGroupedExpression)
 	p.registerPrefix(token.F_CALL_PREFIX, p.parseCallExpression)
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)

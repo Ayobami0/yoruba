@@ -215,7 +215,7 @@ func TestReturnStatement(t *testing.T) {
 da name pada
 da "Ayobami" pada
 da 69 pada
-da (69 + 240) pada
+da {69 + 240} pada
 `)
 
 	l := lexer.New(b)
@@ -633,7 +633,7 @@ func TestCallExpressionParsing(t *testing.T) {
     pe print pa
     pe add pelu 1 + 2, 2 + 4 pa
     pe sum pelu pe multiply pelu 3, 4 pa, pe sub pelu 5, pe divide pelu 4, 3 pa pa pa
-    pe plus pelu (pe multiply pelu 3, 4 pa), (pe sub pelu 5, (pe divide pelu 4, 3 pa) pa) pa
+    pe plus pelu {pe multiply pelu 3, 4 pa}, {pe sub pelu 5, {pe divide pelu 4, 3 pa} pa} pa
     `)
 
 	l := lexer.New(b)

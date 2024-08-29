@@ -9,8 +9,9 @@ const (
 	NUM = "NUM"
 	STR = "STR"
 
-	R_PAREN = ")"
-	L_PAREN = "("
+	R_GROUP = "}"
+	L_GROUP = "{"
+
 	S_QUOTE = "'"
 
 	PLUS   = "+"

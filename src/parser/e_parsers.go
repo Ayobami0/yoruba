@@ -63,7 +63,7 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 
 	expr := p.parseExpression(LOWEST) // Parse expression inside parenteses
 
-	if !p.expectPeek(token.R_PAREN) {
+	if !p.expectPeek(token.R_GROUP) {
 		return nil
 	}
 
