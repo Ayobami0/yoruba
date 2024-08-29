@@ -56,6 +56,15 @@ type FunctionStatement struct {
 func (fn *FunctionStatement) statementNode()       {}
 func (fn *FunctionStatement) TokenLiteral() string { return fn.Token.Literal }
 
+type LoopStatement struct {
+	Token     token.Token
+	Condition Expression
+	Body      *BlockStatement
+}
+
+func (lp *LoopStatement) statementNode()       {}
+func (lp *LoopStatement) TokenLiteral() string { return lp.Token.Literal }
+
 type BlockStatement struct {
 	Token      token.Token
 	Statements []Statement

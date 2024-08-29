@@ -133,3 +133,23 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 	}
 	return blk
 }
+
+func (p *Parser) parseLoopStatement() *ast.LoopStatement {
+	loop := &ast.LoopStatement{Token: p.curToken}
+
+  p.nextToken()
+
+  loop.Condition = p.parseExpression(LOWEST)
+
+  if !p.expectPeek(token.EXECUTE) {
+    return nil
+  }
+
+	loop.Body = p.parseBlockStatement()
+
+	if !p.curTokenIs(token.END) {
+		return nil
+	}
+
+	return loop
+}

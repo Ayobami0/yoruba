@@ -554,5 +554,50 @@ func TestFunctionStatement(t *testing.T) {
 			stmt.Body.Statements[0])
 	}
 
-  testStringLiteral(t, bodyStmt.Expression, "nothing")
+	testStringLiteral(t, bodyStmt.Expression, "nothing")
+}
+
+func TestLoopStatement(t *testing.T) {
+	b := bytes.NewBufferString(`
+    titi fname baje lname se
+      "nothing"
+    pari
+    `)
+
+	l := lexer.New(b)
+	p := New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d",
+			len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.LoopStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.LoopStatement. got=%T",
+			program.Statements[0])
+	}
+
+	cond, ok := stmt.Condition.(*ast.InfixExpression)
+	if !ok {
+		t.Fatalf("stmt.Condition is not ast.InfixExpression, got=%T\n", stmt.Condition)
+	}
+	testLiteralExpression(t, cond.Left, "fname")
+	testLiteralExpression(t, cond.Right, "lname")
+	if cond.Operator != "baje" {
+		t.Fatalf("cond.Operator is not token.IS, got=%s\n", cond.Operator)
+	}
+	if len(stmt.Body.Statements) != 1 {
+		t.Fatalf("function.Body.Statements has not 1 statements. got=%d\n",
+			len(stmt.Body.Statements))
+	}
+	bodyStmt, ok := stmt.Body.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("function body stmt is not ast.ExpressionStatement. got=%T",
+			stmt.Body.Statements[0])
+	}
+
+	testStringLiteral(t, bodyStmt.Expression, "nothing")
 }

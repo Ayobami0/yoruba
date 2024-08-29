@@ -64,6 +64,8 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseIfStatement()
 	case token.FUNCTION:
 		return p.parseFunctionStatement()
+	case token.TILL:
+		return p.parseLoopStatement()
 	default:
 		return p.parseExpressionStatement()
 	}

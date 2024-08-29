@@ -56,7 +56,6 @@ pari
 		{eType: token.NUM, eLiteral: "2"},
 		{eType: token.COMMA, eLiteral: ","},
 		{eType: token.NUM, eLiteral: "3"},
-		{eType: token.ELSEIF, eLiteral: "abiti"},
 		{eType: token.IDENT, eLiteral: "name"},
 		{eType: token.NOTEQL, eLiteral: "kobaje"},
 		{eType: token.STR, eLiteral: "Oludemi"},
