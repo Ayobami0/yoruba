@@ -633,6 +633,7 @@ func TestCallExpressionParsing(t *testing.T) {
     pe print pa
     pe add pelu 1 + 2, 2 + 4 pa
     pe sum pelu pe multiply pelu 3, 4 pa, pe sub pelu 5, pe divide pelu 4, 3 pa pa pa
+    pe plus pelu (pe multiply pelu 3, 4 pa), (pe sub pelu 5, (pe divide pelu 4, 3 pa) pa) pa
     `)
 
 	l := lexer.New(b)
@@ -641,14 +642,14 @@ func TestCallExpressionParsing(t *testing.T) {
 
 	checkParserErrors(t, p)
 
-	if len(program.Statements) != 3 {
+	if len(program.Statements) != 4 {
 		t.Fatalf("program.Statements does not contain %d statements. got=%d\n", 3, len(program.Statements))
 	}
 	testsArgs := []struct {
 		eLen   int
 		eIdent string
 	}{
-		{0, "print"}, {2, "add"}, {2, "sum"},
+		{0, "print"}, {2, "add"}, {2, "sum"},{2, "plus"},
 	}
 
 	for i, v := range program.Statements {
