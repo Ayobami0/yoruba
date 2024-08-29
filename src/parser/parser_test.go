@@ -22,7 +22,7 @@ func checkParserErrors(t *testing.T, p *Parser) {
 	t.FailNow()
 }
 
-func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
+func testLetStatement(t *testing.T, s ast.Statement, name string, value interface{}) bool {
 	if s.TokenLiteral() != "jeki" {
 		t.Errorf("s.TokenLiteral not 'let'. got=%q", s.TokenLiteral())
 		return false
@@ -41,6 +41,10 @@ func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 		t.Errorf("s.Name not '%s'. got=%s", name, letStmt.Name)
 		return false
 	}
+  if letStmt.Value.TokenLiteral() != fmt.Sprint(value) {
+		t.Errorf("s.Value not '%v'. got=%v", value, letStmt.Value.TokenLiteral())
+		return false
+  }
 	return true
 }
 
@@ -191,22 +195,24 @@ jeki school je "FUTA"
 	}
 
 	tests := []struct {
-		expectedIdentifier string
+		eIdentifier string
+		eValue      any
 	}{
-		{"name"},
-		{"age"},
-		{"school"},
+		{"name", "Ayobami"},
+		{"age", 24},
+		{"school", "FUTA"},
 	}
 	for i, tt := range tests {
 		stmt := program.Statements[i]
-		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
+		if !testLetStatement(t, stmt, tt.eIdentifier, tt.eValue) {
 			return
 		}
 	}
 }
 
 func TestReturnStatement(t *testing.T) {
-	b := bytes.NewBufferString(`da name pada
+	b := bytes.NewBufferString(`
+da name pada
 da "Ayobami" pada
 da 69 pada
 da (69 + 240) pada
@@ -220,7 +226,7 @@ da (69 + 240) pada
 		t.Fatalf("ParseProgram() returned nil")
 	}
 	if len(program.Statements) != 4 {
-		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
+		t.Fatalf("program.Statements does not contain 4 statements. got=%d", len(program.Statements))
 	}
 
 	for _, stmt := range program.Statements {

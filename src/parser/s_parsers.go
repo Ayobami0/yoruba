@@ -20,8 +20,9 @@ func (p *Parser) parseLetStatement() ast.Statement {
 		return nil
 	}
 
-	// TODO: Work on expression
 	p.nextToken()
+
+  stmt.Value = p.parseExpression(LOWEST)
 	return &stmt
 }
 
@@ -29,14 +30,13 @@ func (p *Parser) parseLetStatement() ast.Statement {
 func (p *Parser) parseReturnStatement() ast.Statement {
 	stmt := ast.ReturnStatement{PrefixToken: p.curToken}
 
-	// TODO: Should expect an expression or identifier. Advance token for now
-	for p.curToken.Type != token.RTN_SURFIX {
-		p.nextToken()
-	}
+  p.nextToken()
 
-	// if !p.expectPeek(token.RTN_PREFIX) {
-	//    return nil
-	// }
+	stmt.ReturnValue = p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.RTN_SURFIX) {
+		return nil
+	}
 
 	stmt.SurfixToken = p.curToken
 

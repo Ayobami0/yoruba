@@ -19,7 +19,7 @@ type ReturnStatement struct {
 	PrefixToken token.Token
 	SurfixToken token.Token
 
-	ReturnValue *Identifier
+	ReturnValue Expression
 }
 
 func (r *ReturnStatement) statementNode() {
