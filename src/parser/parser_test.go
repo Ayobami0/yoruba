@@ -44,6 +44,26 @@ func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 	return true
 }
 
+func testInfixExpression(t *testing.T, exp ast.Expression, left interface{},
+	operator string, right interface{}) bool {
+	opExp, ok := exp.(*ast.InfixExpression)
+	if !ok {
+		t.Errorf("exp is not ast.OperatorExpression. got=%T(%s)", exp, exp)
+		return false
+	}
+	if !testLiteralExpression(t, opExp.Left, left) {
+		return false
+	}
+	if opExp.Operator != operator {
+		t.Errorf("exp.Operator is not '%s'. got=%q", operator, opExp.Operator)
+		return false
+	}
+	if !testLiteralExpression(t, opExp.Right, right) {
+		return false
+	}
+	return true
+}
+
 func testNumberLiteral(t *testing.T, il ast.Expression, value int64) bool {
 	integ, ok := il.(*ast.NumberLiteral)
 	if !ok {
@@ -600,4 +620,49 @@ func TestLoopStatement(t *testing.T) {
 	}
 
 	testStringLiteral(t, bodyStmt.Expression, "nothing")
+}
+
+func TestCallExpressionParsing(t *testing.T) {
+	b := bytes.NewBufferString(`
+    pe print pa
+    pe add pelu 1 + 2, 2 + 4 pa
+    pe sum pelu pe multiply pelu 3, 4 pa, pe sub pelu 5, pe divide pelu 4, 3 pa pa pa
+    `)
+
+	l := lexer.New(b)
+	p := New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 3 {
+		t.Fatalf("program.Statements does not contain %d statements. got=%d\n", 3, len(program.Statements))
+	}
+	testsArgs := []struct {
+		eLen   int
+		eIdent string
+	}{
+		{0, "print"}, {2, "add"}, {2, "sum"},
+	}
+
+	for i, v := range program.Statements {
+		stmt, ok := v.(*ast.ExpressionStatement)
+
+		if !ok {
+			t.Fatalf("stmt is not ast.ExpressionStatement. got=%T", v)
+		}
+
+		exp, ok := stmt.Expression.(*ast.CallExpression)
+		if !ok {
+			t.Fatalf("stmt.Expression is not ast.CallExpression. got=%T",
+				stmt.Expression)
+		}
+		if !testIdentifier(t, exp.Function, testsArgs[i].eIdent) {
+			return
+		}
+
+		if len(exp.Arguments) != testsArgs[i].eLen {
+			t.Fatalf("wrong length of arguments. got=%d", len(exp.Arguments))
+		}
+	}
 }

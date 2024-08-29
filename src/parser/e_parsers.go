@@ -59,17 +59,53 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 
 // Parser for grouped expressions i.e (1 + 2) * 3
 func (p *Parser) parseGroupedExpression() ast.Expression {
-  p.nextToken() // Move to next token (now in parentises)
+	p.nextToken() // Move to next token (now in parentises)
 
-  expr := p.parseExpression(LOWEST) // Parse expression inside parenteses
+	expr := p.parseExpression(LOWEST) // Parse expression inside parenteses
 
-  if !p.expectPeek(token.R_PAREN) {
-    return nil
-  }
+	if !p.expectPeek(token.R_PAREN) {
+		return nil
+	}
 
-  return expr
+	return expr
 }
 
 func (p *Parser) parseIdentifier() ast.Expression {
 	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+}
+
+func (p *Parser) parseCallExpression() ast.Expression {
+	exp := &ast.CallExpression{Token: p.curToken}
+
+	p.nextToken()
+	exp.Function = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+
+	if !p.peekTokenIs(token.F_CALL_SURFIX) {
+		if !p.expectPeek(token.F_CALL_INFIX) {
+			return nil
+		}
+		exp.Arguments = p.parseCallArguments()
+	}
+
+	if !p.expectPeek(token.F_CALL_SURFIX){
+		return nil
+	}
+
+	return exp
+}
+
+func (p *Parser) parseCallArguments() []ast.Expression {
+	args := []ast.Expression{}
+
+	p.nextToken()
+	args = append(args, p.parseExpression(LOWEST))
+
+	for p.peekTokenIs(token.COMMA) {
+		p.nextToken()
+		p.nextToken()
+
+		args = append(args, p.parseExpression(LOWEST))
+	}
+
+	return args
 }

@@ -22,3 +22,12 @@ type PrefixExpression struct {
 
 func (p *PrefixExpression) expressionNode()      {}
 func (p *PrefixExpression) TokenLiteral() string { return p.Token.Literal }
+
+type CallExpression struct {
+	Token     token.Token
+	Arguments []Expression
+	Function  Expression
+}
+
+func (p *CallExpression) expressionNode()      {}
+func (p *CallExpression) TokenLiteral() string { return p.Token.Literal }
