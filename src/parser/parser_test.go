@@ -568,6 +568,7 @@ func TestFunctionStatement(t *testing.T) {
 		t.Fatalf("function literal parameters wrong. want 2, got=%d\n",
 			len(stmt.Parameters))
 	}
+  testIdentifier(t, &stmt.Ident, "print")
 	testLiteralExpression(t, stmt.Parameters[0], "fname")
 	testLiteralExpression(t, stmt.Parameters[1], "lname")
 	if len(stmt.Body.Statements) != 1 {

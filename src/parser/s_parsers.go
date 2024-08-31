@@ -22,7 +22,7 @@ func (p *Parser) parseLetStatement() ast.Statement {
 
 	p.nextToken()
 
-  stmt.Value = p.parseExpression(LOWEST)
+	stmt.Value = p.parseExpression(LOWEST)
 	return &stmt
 }
 
@@ -30,7 +30,7 @@ func (p *Parser) parseLetStatement() ast.Statement {
 func (p *Parser) parseReturnStatement() ast.Statement {
 	stmt := ast.ReturnStatement{PrefixToken: p.curToken}
 
-  p.nextToken()
+	p.nextToken()
 
 	stmt.ReturnValue = p.parseExpression(LOWEST)
 
@@ -80,6 +80,8 @@ func (p *Parser) parseFunctionStatement() *ast.FunctionStatement {
 	if !p.expectPeek(token.IDENT) {
 		return nil
 	}
+
+	fn.Ident = ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 
 	fn.Parameters = p.parseFunctionParameters()
 	fn.Body = p.parseBlockStatement()
