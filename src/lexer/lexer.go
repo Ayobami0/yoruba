@@ -64,6 +64,10 @@ func (l *Lexer) NextToken() token.Token {
 		str := l.buildStr()
 		t.Literal = str
 		t.Type = token.STR
+	case '[':
+		l.buildComment()
+		l.reader.Scan()
+		return l.NextToken()
 	case 0:
 		t = token.New(token.EOF, ch)
 	default:

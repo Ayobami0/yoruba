@@ -12,6 +12,9 @@ const (
 	R_GROUP = "}"
 	L_GROUP = "{"
 
+	R_BRAC = "["
+	L_BRAC = "]"
+
 	PLUS   = "+"
 	MINUS  = "-"
 	DIVIDE = "/"

@@ -1,10 +1,38 @@
 package lexer
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/Ayobami0/yoruba/src/token"
 )
+
+func (l *Lexer) buildComment() error {
+	var err error
+
+	l.reader.Scan()
+	c := l.reader.Bytes()[0]
+	if c != '[' {
+		err = errors.New("")
+	}
+	l.reader.Scan()
+	for {
+		c = l.reader.Bytes()[0]
+    if c == '\\' {
+      l.reader.Scan()
+      l.reader.Scan()
+    }
+		if c == ']' {
+			l.reader.Scan()
+			if c != ']' {
+				err = errors.New("")
+			}
+			break
+		}
+		l.reader.Scan()
+	}
+	return err
+}
 
 func (l *Lexer) buildStr() string {
 	var str strings.Builder

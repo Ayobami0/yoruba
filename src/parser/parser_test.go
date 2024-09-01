@@ -41,10 +41,10 @@ func testLetStatement(t *testing.T, s ast.Statement, name string, value interfac
 		t.Errorf("s.Name not '%s'. got=%s", name, letStmt.Name)
 		return false
 	}
-  if letStmt.Value.TokenLiteral() != fmt.Sprint(value) {
+	if letStmt.Value.TokenLiteral() != fmt.Sprint(value) {
 		t.Errorf("s.Value not '%v'. got=%v", value, letStmt.Value.TokenLiteral())
 		return false
-  }
+	}
 	return true
 }
 
@@ -568,7 +568,7 @@ func TestFunctionStatement(t *testing.T) {
 		t.Fatalf("function literal parameters wrong. want 2, got=%d\n",
 			len(stmt.Parameters))
 	}
-  testIdentifier(t, &stmt.Ident, "print")
+	testIdentifier(t, &stmt.Ident, "print")
 	testLiteralExpression(t, stmt.Parameters[0], "fname")
 	testLiteralExpression(t, stmt.Parameters[1], "lname")
 	if len(stmt.Body.Statements) != 1 {
@@ -650,7 +650,7 @@ func TestCallExpressionParsing(t *testing.T) {
 		eLen   int
 		eIdent string
 	}{
-		{0, "print"}, {2, "add"}, {2, "sum"},{2, "plus"},
+		{0, "print"}, {2, "add"}, {2, "sum"}, {2, "plus"},
 	}
 
 	for i, v := range program.Statements {
@@ -672,5 +672,32 @@ func TestCallExpressionParsing(t *testing.T) {
 		if len(exp.Arguments) != testsArgs[i].eLen {
 			t.Fatalf("wrong length of arguments. got=%d", len(exp.Arguments))
 		}
+	}
+}
+
+func TestComment(t *testing.T) {
+
+	b := bytes.NewBufferString(`
+    [[This is a comment]]
+    [[
+    This is a multiline comment.
+
+    It spans many lines.
+    ]]
+    [[ [[Escaping comment closers\]] ]]
+    pe add pelu 1 + 2, 2 + 4 pa [[in line comment]]
+    [[ it can come in any where ]] pe sum pelu pe [[Also here]] multiply pelu 3, 4 pa, pe sub pelu 5, pe divide pelu 4, 3 pa pa pa
+    pe plus pelu [[ Does'nt matter where you put it ]]{pe multiply pelu 3, 4 pa}, [[ Does'nt matter where you put it ]] {pe sub pelu 5, {pe divide pelu 4, 3 pa} pa} pa
+    pe sum pelu pe multiply pelu 3, 4 pa, pe sub pelu 5, pe divide pelu 4, 3 pa pa pa [[Here too]]
+    `)
+
+	l := lexer.New(b)
+	p := New(l)
+	program := p.ParseProgram()
+
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 4 {
+		t.Fatalf("program.Statements does not contain %d statements. got=%d\n", 4, len(program.Statements))
 	}
 }
