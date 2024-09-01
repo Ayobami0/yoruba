@@ -26,6 +26,8 @@ const (
 // Map of token types to their precedence
 var precedences = map[token.TokenType]int{
 	token.EQL:    EQUALS,
+  token.AND: EQUALS,
+  token.OR: EQUALS,
 	token.NOTEQL: EQUALS,
 	token.L_THAN: LESSGREATER,
 	token.G_THAN: LESSGREATER,

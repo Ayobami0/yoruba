@@ -41,6 +41,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.NOTEQL, p.parseInfixExpression)
 	p.registerInfix(token.L_THAN, p.parseInfixExpression)
 	p.registerInfix(token.G_THAN, p.parseInfixExpression)
+	p.registerInfix(token.AND, p.parseInfixExpression)
+	p.registerInfix(token.OR, p.parseInfixExpression)
 
 	p.nextToken()
 	p.nextToken()

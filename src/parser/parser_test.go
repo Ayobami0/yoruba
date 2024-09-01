@@ -309,7 +309,7 @@ func TestIntegerLiteralExpression(t *testing.T) {
 
 func TestIfStatement(t *testing.T) {
 	b := bytes.NewBufferString(`
-    ti x baje y lehinna
+    ti {x baje y} ati {x baje z} lehinna
       "abi"
       da x pada
     abi
