@@ -33,7 +33,6 @@ var precedences = map[token.TokenType]int{
 	token.MINUS:  SUM,
 	token.DIVIDE: PRODUCT,
 	token.TIMES:  PRODUCT,
-  token.S_QUOTE: CALL,
 }
 
 // Returns the precedence of the token ahead of the current token

@@ -54,12 +54,12 @@ func (l *Lexer) NextToken() token.Token {
 		t = token.New(token.PLUS, ch)
 	case '-':
 		t = token.New(token.MINUS, ch)
-  case '\'':
-    t = token.New(token.S_QUOTE, ch)
 	case '/':
 		t = token.New(token.DIVIDE, ch)
 	case '*':
 		t = token.New(token.TIMES, ch)
+	case '\'':
+		fallthrough
 	case '"':
 		str := l.buildStr()
 		t.Literal = str

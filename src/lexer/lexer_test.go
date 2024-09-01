@@ -17,10 +17,12 @@ pari
 
 ti name baje "Ayobami" lehinna
   ko sum 2,3
-abiti name kobaje "Oludemi" lehinna
-  ko sum 3,4
-abi lehinna
-  ko sum 5,6
+abi 
+    ti name kobaje "Oludemi" lehinna
+      ko sum 3,4
+    abi lehinna
+      ko sum 5,6
+    pari
 pari
 `)
 
@@ -56,6 +58,8 @@ pari
 		{eType: token.NUM, eLiteral: "2"},
 		{eType: token.COMMA, eLiteral: ","},
 		{eType: token.NUM, eLiteral: "3"},
+		{eType: token.ELSE, eLiteral: "abi"},
+		{eType: token.IF, eLiteral: "ti"},
 		{eType: token.IDENT, eLiteral: "name"},
 		{eType: token.NOTEQL, eLiteral: "kobaje"},
 		{eType: token.STR, eLiteral: "Oludemi"},
@@ -72,6 +76,7 @@ pari
 		{eType: token.NUM, eLiteral: "5"},
 		{eType: token.COMMA, eLiteral: ","},
 		{eType: token.NUM, eLiteral: "6"},
+		{eType: token.END, eLiteral: "pari"},
 		{eType: token.END, eLiteral: "pari"},
 		{eType: token.EOF, eLiteral: ""},
 	}

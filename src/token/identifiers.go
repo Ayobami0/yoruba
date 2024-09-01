@@ -12,14 +12,12 @@ const (
 	R_GROUP = "}"
 	L_GROUP = "{"
 
-	S_QUOTE = "'"
-
 	PLUS   = "+"
 	MINUS  = "-"
 	DIVIDE = "/"
 	TIMES  = "*"
 
-	D_QUOTE = "QUOTE"
+	QUOTE = "QUOTE"
 	COMMA   = "COMMA"
 
 	ASSIGNMENT    = "ASSIGNMENT"
