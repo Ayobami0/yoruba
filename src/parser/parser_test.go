@@ -588,6 +588,7 @@ func TestLoopStatement(t *testing.T) {
 	b := bytes.NewBufferString(`
     titi fname baje lname se
       "nothing"
+      fo
     pari
     `)
 
@@ -616,7 +617,7 @@ func TestLoopStatement(t *testing.T) {
 	if cond.Operator != "baje" {
 		t.Fatalf("cond.Operator is not token.IS, got=%s\n", cond.Operator)
 	}
-	if len(stmt.Body.Statements) != 1 {
+	if len(stmt.Body.Statements) != 2 {
 		t.Fatalf("function.Body.Statements has not 1 statements. got=%d\n",
 			len(stmt.Body.Statements))
 	}

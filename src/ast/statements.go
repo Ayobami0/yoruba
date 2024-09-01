@@ -72,3 +72,10 @@ type BlockStatement struct {
 
 func (b *BlockStatement) statementNode()       {}
 func (b *BlockStatement) TokenLiteral() string { return b.Token.Literal }
+
+type BreakStatement struct {
+	Token token.Token
+}
+
+func (r *BreakStatement) statementNode()       {}
+func (r *BreakStatement) TokenLiteral() string { return r.Token.Literal }

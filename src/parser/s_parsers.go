@@ -155,3 +155,7 @@ func (p *Parser) parseLoopStatement() *ast.LoopStatement {
 
 	return loop
 }
+
+func (p *Parser) parseBreakStatement() *ast.BreakStatement {
+	return &ast.BreakStatement{Token: p.curToken}
+}
