@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Ayobami0/yoruba/src/evaluator"
 	"github.com/Ayobami0/yoruba/src/lexer"
-	"github.com/Ayobami0/yoruba/src/token"
+	"github.com/Ayobami0/yoruba/src/object"
+	"github.com/Ayobami0/yoruba/src/parser"
 )
 
 func main() {
@@ -27,8 +29,12 @@ func main() {
 	}
 
 	l := lexer.New(f)
+	p := parser.New(l)
+	env := object.NewEnvironment()
 
-  for t := l.NextToken(); t.Type != token.EOF; t = l.NextToken() {
-    fmt.Println(t)
-  }
+	program := p.ParseProgram()
+
+	evaluated := evaluator.Eval(program, env)
+
+	fmt.Println(evaluated)
 }
