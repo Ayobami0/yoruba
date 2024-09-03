@@ -42,7 +42,7 @@ To get started with **yoruba**, follow these steps:
 Here's how you can write and run your first program in **yoruba**:
 
 ```yoruba
-pe ko pelu "Aye! E kaabo si [Language Name]!" pa
+pe ko pelu "Aye! E kaabo si Èdè Yorùbá!" pa
 ```
 
 To run this code, save it in a file called `kiki.yrb` and execute:
@@ -102,9 +102,9 @@ ti age baje 18 lehinna [[if age == 18 then]]
     ko "O ti dagba!" [[write "O ti dagba"]]
 abi [[else, yoruba has no else if, so we'd use nested if else statements]]
     ti age baje 13 se 
-        ko "O ti n dagba!"
+        pe ko pelu "O ti n dagba!" pa
     abi
-        ko "O tun kere!"
+        pe ko pelu "O tun kere!" pa
 pari [[end]]
 ```
 
@@ -115,15 +115,15 @@ Loops can be implemented using the `titi` keyword. `yoruba` has no while or for 
   ```yoruba
   jeki x je 0
   titi x baje 5 se [[until x is equal 5 do]]
-      ko x
+      pe ko pelu x pa
       jeki x je x + 1
   pari [[end]]
   ```
 **Infinite loops**
   ```yoruba
   jeki x je 0
-  titi eke se [[until false, this would cause the loop to repeat infinitly]]
-      ko x
+  titi eke se [[until false, this would cause the loop to repeat infinitely]]
+      pe ko pelu x pa
       jeki x je x + 1
     ti x baje 100 lehinna
         fo [[break]]
@@ -167,7 +167,7 @@ Comments can also appear any where, as long as it doesn't break keywords
 Whitespaces has no syntantical meaning in `yoruba`
   ```yoruba
     [[This is the same as...]]
-    jeki x je 0 titi x baje 100 se ko x jeki x je x + 1 pari ko "x waje", x
+    jeki x je 0 titi x baje 100 se ko x jeki x je x + 1 pari ko "x waje", x pa
 
     [[...doing this]]
     jeki x je 0
@@ -216,7 +216,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## **Future Additions**
  - For and While loops
- - Data structures (hashmaps, list)
+ - Data structures (hash maps, list)
  - More built in functions
 
 ## **Resources**
