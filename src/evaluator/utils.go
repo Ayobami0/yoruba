@@ -1,6 +1,8 @@
 package evaluator
 
 import (
+	"fmt"
+
 	"github.com/Ayobami0/yoruba/src/object"
 )
 
@@ -18,7 +20,7 @@ func nativeBoolToBooleanObject(input bool) *object.Boolean {
 
 func evalMinusPrefixOperatorExpression(right object.Object) object.Object {
 	if right.Type() != object.NUMBER_OBJ {
-		return nil
+		return newError(PREFIX_OPERATOR_UNKNOWN, "-", right.Type())
 	}
 	value := right.(*object.Number).Value
 	return &object.Number{Value: -value}
@@ -45,7 +47,7 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 	case "kobaje":
 		return nativeBoolToBooleanObject(leftVal != rightVal)
 	default:
-		return nil
+		return newError(INFIX_OPERATOR_UNKNOWN, left.Type(), operator, right.Type())
 	}
 }
 
@@ -65,17 +67,16 @@ func isTruthy(obj object.Object) bool {
 
 // Does the actual function call and unwraps the return value.
 func applyFunction(fn object.Object, args []object.Object) object.Object {
-	function, ok := fn.(*object.Function)
-
-	if !ok {
-		return nil
-		// TODO: Error handling
-		// return newError("not a function: %s", fn.Type())
+	switch fn := fn.(type) {
+	case *object.Function:
+		extendedEnv := extendFunctionEnv(fn, args)
+		evaluated := Eval(fn.Body, extendedEnv)
+		return unwrapReturnValue(evaluated)
+	case *object.Builtin:
+		return fn.Fn(args...)
+	default:
+		return newError(IDENT_NOT_FUNCTION, fn.Type())
 	}
-
-	extendedEnv := extendFunctionEnv(function, args)
-	evaluated := Eval(function.Body, extendedEnv)
-	return unwrapReturnValue(evaluated)
 }
 
 // Creates a new [object.Environment] and encloses it with the current [object.Environment] to
@@ -100,4 +101,15 @@ func unwrapReturnValue(obj object.Object) object.Object {
 	}
 
 	return obj
+}
+
+func newError(f string, args ...interface{}) *object.Error {
+	return &object.Error{Message: fmt.Sprintf(f, args...)}
+}
+
+func isError(obj object.Object) bool {
+	if obj != nil {
+		return obj.Type() == object.ERROR_OBJ
+	}
+	return false
 }

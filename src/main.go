@@ -14,7 +14,7 @@ func main() {
 	args := os.Args
 
 	if len(args) <= 1 {
-		fmt.Println("Usage: yoru [FILE]")
+		fmt.Println("Usage: yoruba [FILE]")
 		os.Exit(1)
 	}
 	fname := args[1]
@@ -23,7 +23,7 @@ func main() {
 	if err != nil {
 		switch {
 		case os.IsNotExist(err):
-			fmt.Printf("ERROR: file %s not found\n", fname)
+			fmt.Printf("aṣiṣe: %s ko wa ni be nibi\n", fname)
 		}
 		os.Exit(1)
 	}
@@ -34,7 +34,5 @@ func main() {
 
 	program := p.ParseProgram()
 
-	evaluated := evaluator.Eval(program, env)
-
-	fmt.Println(evaluated)
+	evaluator.Eval(program, env)
 }

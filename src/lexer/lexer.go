@@ -58,8 +58,6 @@ func (l *Lexer) NextToken() token.Token {
 		t = token.New(token.DIVIDE, ch)
 	case '*':
 		t = token.New(token.TIMES, ch)
-	case '\'':
-		fallthrough
 	case '"':
 		str := l.buildStr()
 		t.Literal = str

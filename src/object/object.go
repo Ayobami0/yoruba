@@ -14,6 +14,8 @@ type Object interface {
 	Inspect() string
 }
 
+type BuiltinFunction func(args ...Object) Object
+
 const (
 	RETURN_VALUE_OBJ = "RETURN_VALUE"
 	BREAK_OBJ        = "BREAK"
@@ -22,6 +24,8 @@ const (
 	BOOLEAN_OBJ      = "BOOLEAN"
 	STRING_OBJ       = "STRING"
 	FUNCTION_OBJ     = "FUNCTION"
+	BUILTIN_OBJ      = "BUILTIN"
+	ERROR_OBJ        = "ERROR"
 )
 
 type Number struct {
@@ -81,3 +85,20 @@ type Continue struct{}
 
 func (c *Continue) Type() ObjectType { return BREAK_OBJ }
 func (c *Continue) Inspect() string  { return "nil" }
+
+type Builtin struct {
+	Fn BuiltinFunction
+}
+
+func (b *Builtin) Type() ObjectType { return BUILTIN_OBJ }
+func (b *Builtin) Inspect() string  { return "builtin function" }
+
+
+type Error struct {
+  Message string
+  ErrType string
+}
+
+
+func (e *Error) Type() ObjectType { return ERROR_OBJ }
+func (e *Error) Inspect() string  { return "aṣiṣe: " + e.Message }

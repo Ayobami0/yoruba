@@ -61,7 +61,7 @@ jeki name je "Ayobami"
 
 ### **Data Types**
 - **Integers**: Whole numbers (`10`, `-5`)
-- **Strings**: Text enclosed in single or double quotes (`'Oruko mi ni Ayobami'`, `"Oluwa ni"`)
+- **Strings**: Text enclosed in double quotes (`"Oruko mi ni Ayobami"`, `"Oluwa ni"`)
 - **Booleans**: `ooto` (true) and `eke` (false)
 
 ### **Arithmetic Operations**

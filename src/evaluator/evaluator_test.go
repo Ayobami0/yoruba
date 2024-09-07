@@ -240,3 +240,48 @@ func TestLoopStatements(t *testing.T) {
 		testNumberObject(t, evaluated, tt.expected)
 	}
 }
+
+func TestErrorHandling(t *testing.T) {
+	tests := []struct {
+		input           string
+		expectedMessage string
+	}{
+		{
+			"5 + ooto;",
+			"iru ko baramu (NUMBER + BOOLEAN)",
+		},
+		{
+			"5 + ooto 5",
+			"iru ko baramu (NUMBER + BOOLEAN)",
+		},
+		{
+			"-ooto",
+			"onišẹ aimọ (-BOOLEAN)",
+		},
+		{
+			"ooto + eke",
+			"onišẹ aimọ (BOOLEAN + BOOLEAN)",
+		},
+		{
+			"5 ooto + eke 5",
+			"onišẹ aimọ (BOOLEAN + BOOLEAN)",
+		},
+		{
+			"ti 10 tobiju 1 lehinna ooto + eke pari",
+			"onišẹ aimọ (BOOLEAN + BOOLEAN)",
+		},
+	}
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		errObj, ok := evaluated.(*object.Error)
+		if !ok {
+			t.Errorf("no error object returned. got=%T(%+v)",
+				evaluated, evaluated)
+			continue
+		}
+		if errObj.Message != tt.expectedMessage {
+			t.Errorf("wrong error message. expected=%q, got=%q",
+				tt.expectedMessage, errObj.Message)
+		}
+	}
+}
