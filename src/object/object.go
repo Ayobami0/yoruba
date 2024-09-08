@@ -93,12 +93,10 @@ type Builtin struct {
 func (b *Builtin) Type() ObjectType { return BUILTIN_OBJ }
 func (b *Builtin) Inspect() string  { return "builtin function" }
 
-
 type Error struct {
-  Message string
-  ErrType string
+	Message string
+	ErrType string
 }
-
 
 func (e *Error) Type() ObjectType { return ERROR_OBJ }
 func (e *Error) Inspect() string  { return "aṣiṣe: " + e.Message }

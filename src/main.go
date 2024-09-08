@@ -38,7 +38,9 @@ func main() {
 	if len(p.Errors()) != 0 {
 		printParserErrors(p.Errors())
 	} else {
-		evaluator.Eval(program, env)
+    if obj := evaluator.Eval(program, env); obj.Type() == object.ERROR_OBJ {
+      fmt.Println(obj.Inspect())
+    }
 	}
 
 }
