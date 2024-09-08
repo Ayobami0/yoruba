@@ -1,6 +1,8 @@
+jeki add je 12
+
 pe ko pelu "Kaabo, jọwọ tẹ alaye rẹ sii nibi" pa
 
 jeki name je pe ka pelu "Oruko: " pa
 jeki age je pe ka pelu "Ojo ori: " pa
 
-pe ko pelu "E kaabo ", name, " Omo odun ", age, " lo je." pa
+pe ko pelu "E kaabo", name, "Omo odun", age, "lo je." pa

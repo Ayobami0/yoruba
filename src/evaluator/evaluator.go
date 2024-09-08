@@ -118,7 +118,7 @@ func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object
 		return val
 	}
 
-	return newError(IDENT_NOT_FOUND + node.Value)
+	return newError(IDENT_NOT_FOUND, node.Value)
 }
 
 func evalInfixExpression(s string, left, right object.Object) object.Object {

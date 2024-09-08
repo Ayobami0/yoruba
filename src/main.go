@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
+	"strings"
 
 	"github.com/Ayobami0/yoruba/src/evaluator"
 	"github.com/Ayobami0/yoruba/src/lexer"
@@ -31,8 +33,32 @@ func main() {
 	l := lexer.New(f)
 	p := parser.New(l)
 	env := object.NewEnvironment()
-
 	program := p.ParseProgram()
 
-	evaluator.Eval(program, env)
+	if len(p.Errors()) != 0 {
+		printParserErrors(p.Errors())
+	} else {
+		evaluator.Eval(program, env)
+	}
+
+}
+
+func printParserErrors(errors []string) {
+	fmt.Println("Awọn aṣiṣe:")
+	lenOfPad := len(errors)
+
+	for i, msg := range errors {
+		fmt.Printf("\t%d.%s %s\n", i+1, buildPadding(lenOfPad), msg)
+	}
+	fmt.Printf("Aṣiṣe %d lapapọ\n", lenOfPad)
+}
+
+func buildPadding(length int) string {
+	l := int(math.Log10(float64(length))) + 1
+	var pad strings.Builder
+	for i := 0; i < l; i++ {
+		pad.WriteByte(' ')
+
+	}
+	return pad.String()
 }
