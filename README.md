@@ -30,12 +30,12 @@
 To get started with **yoruba**, follow these steps:
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/Ayobami0/yourba.git
+   git clone https://github.com/Ayobami0/yourba.git; cd yoruba
    ```
 2. **Run the interpreter:**
    ```bash
    # yoruba files have the extension .yrb
-   ./yoruba file.yrb
+   ./bin/yoruba file.yrb
    ```
 
 ### **Hello World**
